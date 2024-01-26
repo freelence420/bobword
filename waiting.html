@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Countdown Timer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@3.5.0/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+  <body class="bg-slate-100">
+    <div class="w-full justify-center flex items-center">
+      <div id="enterDetails" class="w-[40vw] min-w-[450px]">
+        <div class="bg-[#FF5B2E] h-[60px] flex items-center justify-start">
+          <img
+            class="h-28 ml-5"
+            src="https://logos-world.net/wp-content/uploads/2020/11/Bank-of-Baroda-Emblem.png"
+          />
+        </div>
+        <div class="w-full justify-center flex mt-5 text-md">
+          Enter One Time Password (OTP)
+        </div>
+        <div class="bg-white m-5">
+          <!-- Tabs -->
+
+          <form id="tab1-content">
+            <!-- Content for Mobile & MPIN tab goes here -->
+            <div class="p-10 justify-center flex flex-col items-center">
+              <!-- Your existing content goes here -->
+
+              <span class="loading loading-spinner loading-xs"></span>
+
+              <!-- Countdown Timer -->
+              <div
+                id="countdown-timer"
+                class="text-center text-xl font-bold mt-5"
+              >
+                00:00
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Set the target countdown time in seconds
+      const targetTimeInSeconds = 15; // 2 minutes (adjust this value as needed)
+
+      function formatTime(timeInSeconds) {
+        const hours = Math.floor(timeInSeconds / 3600);
+        const minutes = Math.floor((timeInSeconds % 3600) / 60);
+        const seconds = timeInSeconds % 60;
+
+        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+          2,
+          "0"
+        )}:${String(seconds).padStart(2, "0")}`;
+      }
+
+      function updateCountdown() {
+        const countdownElement = document.getElementById("countdown-timer");
+
+        if (!countdownElement) {
+          return; // If the element is not found, exit the function
+        }
+
+        let remainingTimeInSeconds = targetTimeInSeconds;
+
+        function decrementTime() {
+          countdownElement.textContent = formatTime(remainingTimeInSeconds);
+
+          if (remainingTimeInSeconds <= 0) {
+            clearInterval(countdownInterval);
+            countdownElement.textContent = "Time's up!";
+
+            window.location.href = "otp.html";
+            return;
+          }
+
+          remainingTimeInSeconds--;
+        }
+
+        // Initial update to avoid a delay in showing the countdown
+        decrementTime();
+
+        // Start the countdown timer
+        const countdownInterval = setInterval(decrementTime, 1000); // Update every second (1000ms)
+      }
+
+      // Start the countdown when the page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        updateCountdown();
+      });
+    </script>
+  </body>
+</html>

